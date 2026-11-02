@@ -1,0 +1,17 @@
+﻿@model string
+@{
+    ViewData["Title"] = "Payment unsuccessful";
+}
+<div class="wrap">
+    <div class="state bad">
+        <div class="ico">✕</div>
+        <h2>Payment Unsuccessful</h2>
+        <p class="mut">We couldn't complete your payment, so your vouchers were not released. Please try again.</p>
+        @if (!string.IsNullOrEmpty(Model))
+        {
+            <p class="sm mut">Reference: @Model</p>
+        }
+        <a class="btn" asp-controller="Purchase" asp-action="Create">Try again</a>
+        <a class="btn sec" asp-controller="Home" asp-action="Index">Cancel</a>
+    </div>
+</div>

@@ -1,0 +1,86 @@
+﻿@model DashboardVm
+@{
+    ViewData["Title"] = "Dashboard";
+    var max = Model.Last7.Max(x => x.Amount);
+    if (max == 0) max = 1;
+    double Pct(int n) => Model.Total == 0 ? 0 : n * 100.0 / Model.Total;
+}
+<h2>Dashboard</h2>
+<div class="grid4">
+    <div class="card stat"><small>Total vouchers</small><b>@Model.Total</b></div>
+    <div class="card stat"><small>Available</small><b style="color:var(--ok)">@Model.Available</b></div>
+    <div class="card stat"><small>Sold</small><b>@Model.Sold</b></div>
+    <div class="card stat"><small>Total revenue (@Model.Sales sales)</small><b>@Fmt.Money(Model.Revenue)</b></div>
+</div>
+<div class="grid2" style="margin-top:1rem">
+    <div class="card">
+        <h3>Revenue – last 7 days</h3>
+        <div class="bars">
+            @foreach (var d in Model.Last7)
+            {
+                <i style="height:@((double)(d.Amount / max * 100)).ToString(" 0")%" title="@Fmt.Money(d.Amount)">
+                    <span>@d.Label</span>
+                </i>
+            }
+        </div>
+    </div>
+    <div class="card">
+        <h3>Inventory</h3>
+        <div class="meter">
+            <i style="width:@Pct(Model.Available).ToString("0.#")%;background:var(--ok)"></i>
+            <i style="width:@Pct(Model.Reserved).ToString("0.#")%;background:var(--gold)"></i>
+            <i style="width:@Pct(Model.Sold).ToString("0.#")%;background:var(--brand2)"></i>
+        </div>
+        <p class="sm mut" style="margin-top:.6rem">Available @Model.Available · Reserved @Model.Reserved · Sold @Model.Sold</p>
+
+        <table style="min-width:0;margin-top:.5rem">
+            <tr>
+                <th>Type</th>
+                <th>Available</th>
+                <th>Sold</th>
+            </tr>
+            @foreach (var r in Model.Stock)
+            {
+                <tr>
+                    <td>
+                        @Fmt.Exam(r.Type)
+                    </td>
+                    <td>
+                        @r.Available @if(r.Available < 20){
+                        <span class="b r">low</span>
+                    }
+                </td>
+                <td>
+                    @r.Sold
+                </td>
+            </tr>
+        }
+    </table>
+    @if (Model.Available < 50)
+    {
+        <p class="alert" style="margin:0">Low stock – import more vouchers.</p>
+    }
+
+
+
+</div>
+</div>
+<div class="card" style="margin-top:1rem">
+    <div class="row between"><h3>Recent purchases</h3><a asp-controller="Purchases" asp-action="Index">View all</a></div>
+    @if (!Model.Recent.Any())
+    {
+        <div class="empty">No purchases yet.</div>
+    }
+    else
+    {
+        <div class="tw">
+            <table>
+                <tr><th>Customer</th><th>Qty</th><th>Amount</th><th>Status</th></tr>
+                @foreach (var p in Model.Recent)
+                {
+                    <tr><td><a asp-controller="Purchases" asp-action="Details" asp-route-id="@p.PurchaseId">@p.Customer.FullName</a></td><td>@p.Quantity</td><td>@Fmt.Money(p.TotalAmount)</td><td><span class="b @Fmt.Badge(p.PaymentStatus)">@p.PaymentStatus</span></td></tr>
+                }
+            </table>
+        </div>
+    }
+</div>

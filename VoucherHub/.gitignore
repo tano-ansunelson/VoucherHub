@@ -1,0 +1,17 @@
+@"
+# Visual Studio
+.vs/
+**/.vs/
+
+# Build files
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+
+# Development configuration
+appsettings.json
+appsettings.Development.json
+"@ | Set-Content .gitignore

@@ -1,0 +1,29 @@
+﻿@model string
+@{
+    ViewData["Title"] = "Verifying payment";
+}
+<div class="wrap">
+    <div class="state" role="status" aria-live="polite">
+        <div class="spin">
+        </div>
+        <h2>Verifying your payment…</h2>
+        <p class="mut">Please don't close or refresh this page. This usually takes a few seconds.</p>
+    </div>
+
+</div>
+@section Scripts {
+    <script>
+        var ref = @Json.Serialize(Model), tries = 0;
+        var statusUrl = '@Url.Action("Status", "Payment")', ok = '@Url.Action("Success", "Payment")', bad = '@Url.Action("Failed", "Payment")', pend = '@Url.Action("Pending", "Payment")';
+        function go(u) { location.replace(u + '?reference=' + encodeURIComponent(ref)); }
+        function poll() {
+          fetch(statusUrl + '?reference=' + encodeURIComponent(ref)).then(function (r) { return r.json(); }).then(function (j) {
+            if (j.status === 'Paid') return go(ok);
+            if (j.status === 'Failed') return go(bad);
+            next();
+          }).catch(next);
+        }
+        function next() { if (++tries >= 8) return go(pend); setTimeout(poll, 2500); }
+        poll();
+    </script>
+}

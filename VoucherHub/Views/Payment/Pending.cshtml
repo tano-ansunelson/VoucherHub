@@ -1,0 +1,19 @@
+﻿@model string
+@{
+    ViewData["Title"] = "Payment pending";
+}
+<div class="wrap">
+    <div class="state pend">
+        <div class="ico"></div>
+        <h2>Payment Pending</h2>
+        <p class="mut">We're still waiting for confirmation from Paystack. Your vouchers will be emailed as soon as it's confirmed. Please don't pay again.</p>
+        <div class="card">
+            <dl>
+                <dt>Reference</dt>
+                <dd>@Model</dd>
+            </dl>
+        </div>
+        <a class="btn" style="margin-top:1rem" asp-controller="Payment" asp-action="Callback" asp-route-reference="@Model">Check status again</a>
+    </div>
+</div>
+

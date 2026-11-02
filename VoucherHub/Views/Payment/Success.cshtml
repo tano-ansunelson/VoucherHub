@@ -1,0 +1,30 @@
+﻿@using VoucherHub.Helpers
+@model Purchase
+@{ ViewData["Title"] = "Payment successful"; }
+<div class="wrap">
+    <div class="state ok">
+  <div class="ico">✓</div>
+  <h2>Payment Successful</h2>
+  <p class="mut">Your vouchers have been sent to <b>@Model.Customer.Email</b>.</p>
+  <div class="card">
+      <dl>
+    <dt>Customer</dt>
+    <dt>Customer</dt>
+    <dd>@Model.Customer.FullName</dd>
+        <dt>Voucher type</dt><dd>@Fmt.Exam(Model.ExamType)</dd>
+    <dt>Quantity</dt>
+    <dd>@Model.Quantity voucher@(Model.Quantity > 1 ? "s" : "")</dd>
+    <dt>Amount paid</dt>
+    <dd>@Fmt.Money(Model.TotalAmount)</dd>
+    <dt>Reference</dt>
+   @*  <dt>Reference</dt>
+    <dt>Reference</dt>
+    <dt>Reference</dt>
+    <dt>Reference</dt>
+    <dt>Reference</dt> *@
+    <dd>@Model.PaystackReference</dd>
+  </dl>
+  </div>
+  <p class="sm mut" style="margin-top:1rem">For your security, PINs are shown only in the email. Check your spam folder if you can't find it.</p>
+  <a class="btn sec" asp-controller="Home" asp-action="Index">Back to home</a>
+</div></div>

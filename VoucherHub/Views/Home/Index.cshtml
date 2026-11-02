@@ -1,0 +1,70 @@
+﻿@using VoucherHub.Helpers
+@inject Microsoft.Extensions.Options.IOptions<ShopOptions> Shop
+@{
+    ViewData["Title"] = "WASSCE Result Checker Voucher";
+}
+<section class="hero">
+    <div class="wrap">
+        <div>
+            <h1>WASSCE &amp; BECE Result Checker Vouchers</h1>
+            <p>Purchase your WASSCE or BECE Result Checker Voucher quickly and securely. Pay with Mobile Money or card and receive it by email in minutes.</p>
+            <a class="btn gold" asp-controller="Purchase" asp-action="Create">Buy Voucher →</a>
+            <div class="trust">
+                <span> Secured by Paystack</span>
+                <span>Delivered by email</span>
+            </div>
+        </div>
+        <div class="price">
+            <span class="mut">Price per voucher</span>
+            <div style="display:flex;justify-content:space-around;gap:1rem;margin:.5rem 0">
+                <div><b>WASSCE/BECE</b><big>@Fmt.Money(Shop.Value.WasscePrice)</big></div>
+                @*  <div><b>BECE</b><big>@Fmt.Money(Shop.Value.BecePrice)</big></div> *@
+            </div>
+            <span class="sm mut">MTN MoMo · Telecel Cash · AirtelTigo · Cards</span>
+        </div>
+    </div>
+
+</section>
+<div class="wrap">
+    <h2>How it works</h2>
+    <div class="grid3">
+        <div class="card">
+            <div class="num">1</div>
+            <h3>Enter your details</h3>
+            <p class="mut">Choose WASSCE or BECE, then enter your name, phone, email and quantity.</p>
+        </div>
+        <div class="card">
+            <div class="num">2</div>
+            <h3>Pay securely</h3>
+            <p class="mut">Complete payment on Paystack's secure checkout.</p>
+        </div>
+        <div class="card">
+            <div class="num">3</div>
+       @*      <div class="num">3</div>
+            <div class="num">3</div>
+            <div class="num">3</div> *@
+
+            <h3>Check your email</h3>
+            <p class="mut">Your serial number and PIN arrive once payment is confirmed.</p>
+        </div>
+    </div>
+    <h2 style="margin-top:2rem">Frequently asked questions</h2>
+    <div class="card">
+        <details>
+            <summary>Does this site check my results?</summary>
+            <p class="mut">No. We only sell result-checker vouchers. Use your voucher on the official results portal.</p>
+        </details>
+        <details>
+            <summary>When will I receive my voucher?</summary>
+            <p class="mut">Right after Paystack confirms your payment, usually within a minute.</p>
+        </details>
+        <details>
+            <summary>I didn't get an email</summary>
+            <p class="mut">Check your spam folder, then contact support with your transaction reference.</p>
+        </details>
+        <details>
+            <summary>Can I buy more than one?</summary>
+            <p class="mut">Yes. Choose the quantity on the purchase page and pay once.</p>
+        </details>
+    </div>
+</div>

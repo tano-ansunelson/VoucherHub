@@ -1,0 +1,41 @@
+﻿@model VoucherFormVm
+@{
+    ViewData["Title"] = "Add voucher";
+}
+<h2>Add Voucher</h2>
+<form method="post">
+    <div class="card" style="max-width:460px">
+        <input type="hidden" asp-for="Id">
+
+        <div class="f">
+            <label asp-for="SerialNumber"> </label>
+            <input asp-for="SerialNumber" placeholder="WAEC-2026-839201">
+            <span asp-validation-for="SerialNumber" class="field-validation-error">
+
+            </span>
+
+        </div>
+        <div class="f">
+            <label asp-for="Pin"> </label>
+            <input asp-for="Pin" placeholder="7394-2819-XXXX" autocomplete="off">
+            <span asp-validation-for="Pin" class="field-validation-error"></span>
+        </div>
+        <div class="f">
+            <label asp-for="ExamType"></label>
+            <select asp-for="ExamType">
+                <option value="Wassce">WASSCE</option>
+                <option value="Bece">BECE</option>
+            </select>
+
+        </div>
+        <div class="f">
+            <label asp-for="Price"></label>
+            <input asp-for="Price" type="number" step="0.01" min="1">
+            <span asp-validation-for="Price" class="field-validation-error"></span>
+        </div>
+        <div class="row">
+            <button class="btn">Save Voucher</button>
+            <a class="btn sec" asp-action="Index">Cancel</a>
+        </div>
+    </div>
+</form>

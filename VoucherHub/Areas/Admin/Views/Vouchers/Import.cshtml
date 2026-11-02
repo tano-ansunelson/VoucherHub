@@ -1,0 +1,79 @@
+﻿@model ImportResultVm
+@{
+    ViewData["Title"] = "Import vouchers";
+    bool done = Model.Imported > 0 || Model.Skipped.Any();
+}
+<h2>Import Vouchers</h2>
+<div class="grid2">
+    <form method="post" enctype="multipart/form-data" class="card">
+        <div asp-validation-summary="ModelOnly" class="alert"></div>
+
+        <div class="f">
+            <label for="examType">These vouchers are for</label>
+            <select id="examType" name="examType">
+                <option value="Wassce">WASSCE</option>
+                <option value="Bece">BECE</option>
+            </select>
+        </div>
+
+
+        <div class="drop">
+            <label for="file">Choose a CSV or Excel (.xlsx) file</label>
+            <input type="file" id="file" name="file" accept=".csv,.xlsx" required>
+        </div>
+        <button class="btn" style="margin-top:1rem">Import</button>
+    </form>
+    <div class="card">
+        <h3>File format</h3>
+        <p class="sm mut">
+            First row = headers. Serial numbers must be unique.
+            Max 5,000 rows. In Excel, format the PIN column as Text so leading zeros are kept.
+        </p>
+        <table style="min-width:0">
+            <tr>
+                <th>SerialNumber</th>
+                <th>PIN</th>
+            </tr>
+            <tr>
+                <td>WAEC-001</td>
+                <td>839291</td>
+            </tr>
+            <tr>
+                <td>WAEC-002</td>
+                <td>729183</td>
+            </tr>
+
+        </table>
+    </div>
+</div>
+@if (done)
+{
+    <div class="card" style="margin-top:1rem">
+        <h3>Import result</h3>
+        <div class="row">
+            <span class="b g">@Model.Imported imported</span>
+            <span class="b @(Model.Skipped.Any() ? "y" : "n")">@Model.Skipped.Count skipped</span>
+        </div>
+        @if (Model.Skipped.Any())
+        {
+            <div class="tw">
+                <table>
+                    <tr>
+                        <th>Row</th>
+                        <th>Serial</th>
+                        <th>Issue</th>
+                    </tr>
+                    @foreach (var s in Model.Skipped)
+                    {
+                        <tr>
+                            <td>@s.Row</td>
+                            <td>@(string.IsNullOrEmpty(s.Serial) ? "(empty)" : s.Serial)</td>
+                            <td>@s.Issue</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        }
+        <a class="btn sec sm" style="margin-top:1rem" asp-action="Index">View vouchers</a>
+    </div>
+}

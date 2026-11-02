@@ -1,0 +1,73 @@
+﻿@using VoucherHub.Helpers
+@model VoucherHub.ViewModels.CheckoutVm
+@{ ViewData["Title"] = "Buy Voucher"; }
+<div class="wrap">
+  <h2>Buy Voucher</h2>
+  <form method="post" class="grid2" id="checkout" novalidate>
+    <div class="card">
+      <div asp-validation-summary="ModelOnly" class="alert"></div>
+      
+      <div class="f">
+          <label asp-for="FullName"></label>
+          <input asp-for="FullName" placeholder="Nelson Tano" autocomplete="name">
+          <span asp-validation-for="FullName" class="field-validation-error"></span>
+      </div>
+      <div class="f">
+          <label asp-for="PhoneNumber">
+    </label>
+    <input asp-for="PhoneNumber" type="tel" inputmode="tel" placeholder="024 XXX XXXX" autocomplete="tel">
+    <span asp-validation-for="PhoneNumber" class="field-validation-error"></span>
+    </div>
+      <div class="f">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" type="email" placeholder="example@email.com" autocomplete="email">
+            <span asp-validation-for="Email" class="field-validation-error"></span>
+            </div>
+ <div class="f">
+     <label asp-for="ExamType"></label>
+        <select asp-for="ExamType">
+          <option value="Wassce">WASSCE – @Fmt.Money(Model.WasscePrice)</option>
+          <option value="Bece">BECE – @Fmt.Money(Model.BecePrice)</option>
+        </select>
+        </div>
+      <div class="f">
+        <label asp-for="Quantity"></label>
+        <div class="qty">
+          <button type="button" id="minus" aria-label="Decrease quantity">−</button>
+          <input asp-for="Quantity" type="number" min="1" max="@Model.MaxQuantity" inputmode="numeric">
+          <button type="button" id="plus" aria-label="Increase quantity">+</button>
+        </div>
+        <span asp-validation-for="Quantity" class="field-validation-error"></span>
+      </div>
+      <p class="sm mut">Double-check your email – your vouchers are sent only there.</p>
+    </div>
+    <div class="card" style="align-self:start">
+      <h3>Order summary</h3>
+        <div class="sum" aria-live="polite">
+        <div><span>Voucher type</span><span id="sumType">@Fmt.Exam(Model.ExamType)</span></div>
+        <div><span>Price per voucher</span><span id="sumPrice">@Fmt.Money(Model.PriceFor(Model.ExamType))</span></div>
+        <div><span>Quantity</span><span id="sumQty">@Model.Quantity</span></div>
+        <div class="tot"><span>Total</span><span id="sumTotal">@Fmt.Money(Model.PriceFor(Model.ExamType) * Model.Quantity)</span></div>
+      </div>
+      <button class="btn full" id="buy" type="submit" style="margin-top:1rem">Buy Now</button>
+      <p class="sm mut" style="margin:.75rem 0 0;text-align:center">Payment is handled by Paystack. The final amount is confirmed on our server.</p>
+    </div>
+  </form>
+</div>
+@section Scripts {
+<script>
+  (function () {
+    var prices = { Wassce: @Model.WasscePrice.ToString(System.Globalization.CultureInfo.InvariantCulture), Bece: @Model.BecePrice.ToString(System.Globalization.CultureInfo.InvariantCulture) }, max = @Model.MaxQuantity;
+    var typeSel = document.getElementById('ExamType');
+    var q = document.getElementById('Quantity');
+    function clamp() { var v = parseInt(q.value, 10) || 1; return Math.min(max, Math.max(1, v)); }
+    function update() { var v = clamp(), price = prices[typeSel.value]; document.getElementById('sumQty').textContent = v; document.getElementById('sumType').textContent = typeSel.value.toUpperCase(); document.getElementById('sumPrice').textContent = 'GH₵' + price.toFixed(2); document.getElementById('sumTotal').textContent = 'GH₵' + (v * price).toFixed(2); }
+    document.getElementById('minus').onclick = function () { q.value = Math.max(1, clamp() - 1); update(); };
+    document.getElementById('plus').onclick = function () { q.value = Math.min(max, clamp() + 1); update(); };
+    q.addEventListener('input', update); typeSel.addEventListener('change', update);
+    document.getElementById('checkout').addEventListener('submit', function () {
+      var b = document.getElementById('buy'); setTimeout(function () { b.disabled = true; b.textContent = 'Redirecting to Paystack…'; }, 0);
+    });
+  })();
+</script>
+}

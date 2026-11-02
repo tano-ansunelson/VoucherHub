@@ -1,0 +1,58 @@
+﻿@model PurchaseListVm
+@{
+    ViewData["Title"] = "Purchases";
+}
+<h2>Sales / Purchases</h2>
+<div class="card">
+    @if (!Model.Items.Any())
+    {
+        <div class="empty">No purchases yet.</div>
+    }
+    else
+    {
+        <div class="tw">
+            <table style="min-width:900px">
+                <tr>
+                    <th>Customer</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Type</th>
+                    <th>Qty</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Reference</th>
+                    <th>Date</th>
+                </tr>
+                @foreach (var p in Model.Items)
+                {
+                    <tr>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@p.PurchaseId">@p.Customer.FullName</a>
+                        </td>
+                        <td>@p.Customer.Email</td>
+                        <td>@p.Customer.PhoneNumber</td>
+                        <td>@Fmt.Exam(p.ExamType)</td>
+                        <td>@p.Quantity</td>
+                        <td>@Fmt.Money(p.TotalAmount)</td>
+                        <td>
+                            <span class="b @Fmt.Badge(p.PaymentStatus)">@p.PaymentStatus</span>
+                        </td>
+                        <td>@p.PaystackReference</td>
+                        <td>@Fmt.Date(p.PurchasedAt)</td>
+                    </tr>
+                }
+            </table>
+        </div>
+        <div class="pager">
+            @if (Model.Page > 1)
+            {
+                <a class="btn sec sm" asp-action="Index" asp-route-page="@(Model.Page - 1)">← Prev</a>
+            }
+            <span class="sm mut">Page @Model.Page of @Model.Pages</span>
+            @if (Model.Page < Model.Pages)
+            {
+                <a class="btn sec sm" asp-action="Index" asp-route-page="@(Model.Page + 1)">Next →</a>
+            }
+        </div>
+    }
+</div>

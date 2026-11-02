@@ -1,0 +1,89 @@
+﻿@model Purchase
+@{
+    ViewData["Title"] = "Purchase details";
+}
+<a class="btn sec sm" asp-action="Index">← Purchases</a>
+<h2 style="margin-top:.75rem">
+    Purchase #@Model.PurchaseId
+    <span class="b @Fmt.Badge(Model.PaymentStatus)">@Model.PaymentStatus</span>
+</h2>
+@if (Model.PaymentStatus == PaymentStatus.NeedsAttention)
+{
+    <div class="alert">
+        Payment received but vouchers could not be assigned
+        (out of stock or amount mismatch). Restock or refund via Paystack, then contact the customer.
+    </div>
+}
+<div class="grid2">
+    <div class="card">
+        <h3>Customer</h3>
+        <dl>
+            <dt>Name</dt>
+            <dd>@Model.Customer!.FullName</dd>
+            <dt>Email</dt>
+            <dd>@Model.Customer.Email</dd>
+            <dt>Phone</dt>
+            <dd>@Model.Customer.PhoneNumber</dd>
+        </dl>
+        <h3>Payment</h3>
+        <dl>
+            <dt>Voucher type</dt>
+            <dd>@Fmt.Exam(Model.ExamType)</dd>
+            <dt>Quantity</dt>
+            <dd>@Model.Quantity</dd>
+            <dt>Total</dt>
+            <dd>@Fmt.Money(Model.TotalAmount)</dd>
+            <dt>Paystack reference</dt>
+            <dd>@Model.PaystackReference</dd>
+            <dt>Purchased</dt>
+            <dd>@Fmt.Date(Model.PurchasedAt)</dd>
+            @if (Model.PaidAt != null)
+            {
+                <dt>Paid</dt>
+                <dd>
+                    @Fmt.Date(Model.PaidAt.Value)
+
+                </dd>
+            }
+            <dt>Email sent</dt>
+            <dd>@(Model.EmailSentAt == null ? "No" : Fmt.Date(Model.EmailSentAt.Value))</dd>
+
+        </dl>
+    </div>
+    <div class="card">
+        <h3>Vouchers assigned</h3>
+        @if (!Model.PurchaseVouchers.Any())
+        {
+            <p class="mut">No vouchers assigned.</p>
+        }
+        else
+        {
+            <div class="tw">
+                <table style="min-width:0">
+                    <tr>
+                        <th>Serial</th>
+                        <th>PIN</th>
+                        <th>Status</th>
+                    </tr>
+                    @foreach (var pv in Model.PurchaseVouchers)
+                    {
+                        <tr>
+                            <td>@pv.Voucher.SerialNumber</td>
+                            <td>@pv.Voucher.Pin</td>
+                            <td>
+                                <span class="b @Fmt.Badge(pv.Voucher.Status)">@pv.Voucher.Status</span>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        }
+        @if (Model.PaymentStatus == PaymentStatus.Paid)
+        {
+            <form method="post" asp-action="Resend" asp-route-id="@Model.PurchaseId" style="margin-top:1rem">
+                <button class="btn sec sm">Resend email</button>
+
+            </form>
+        }
+    </div>
+</div>

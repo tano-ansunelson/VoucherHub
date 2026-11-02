@@ -1,0 +1,86 @@
+﻿@model VoucherListVm
+@{
+    ViewData["Title"] = "Vouchers";
+}
+<div class="row between">
+    <h2>Voucher Management</h2>
+    <div class="row">
+        <a class="btn sec sm" asp-action="Import">Import</a>
+        <a class="btn sm" asp-action="Create">+ Add voucher</a>
+    </div>
+</div>
+<div class="card">
+    <form method="get" class="row" style="margin-bottom:1rem">
+        <input name="search" value="@Model.Search" placeholder="Search serial number…" style="max-width:280px" aria-label="Search">
+        <select name="type" style="max-width:150px" aria-label="Type">
+            <option value="">All types</option>
+            <option value="Wassce" selected="@(Model.Type == "Wassce")">WASSCE</option>
+            <option value="Bece" selected="@(Model.Type == "Bece")">BECE</option>
+        </select>
+        <select name="status" style="max-width:180px" aria-label="Status">
+            <option value="">All statuses</option>
+            @foreach (var s in Enum.GetNames<VoucherStatus>())
+            {
+                <option value="@s" selected="@(Model.Status == s)">@s</option>
+            }
+        </select>
+        <button class="btn sm">Filter</button>
+    </form>
+    @if (!Model.Items.Any())
+    {
+        <div class="empty">
+            No vouchers match. Try another search, or <a asp-action="Create">add a voucher</a>
+            .
+        </div>
+    }
+    else
+    {
+        <div class="tw">
+            <table>
+                <tr>
+                    <th>Type</th>
+                    <th>Serial</th>
+                    <th>PIN</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+                @foreach (var v in Model.Items)
+                {
+                    <tr>
+                        <td>@Fmt.Exam(v.ExamType)</td>
+                        <td>@v.SerialNumber</td>
+                        <td>••••••</td>
+                        <td>@Fmt.Money(v.price)</td>
+                        <td>
+                            <span class="b @Fmt.Badge(v.Status)">@v.Status</span>
+                        </td>
+                        <td>
+                            <a class="btn sec sm" asp-action="Details" asp-route-id="@v.VoucherId">View</a>
+                            @if (v.Status == VoucherStatus.Available)
+                            {
+                                <a class="btn sec sm" asp-action="Edit" asp-route-id="@v.VoucherId">Edit</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+        <div class="pager">
+            @if (Model.Page > 1)
+            {
+                <a class="btn sec sm" asp-action="Index" asp-route-page="@(Model.Page - 1)" asp-route-search="@Model.Search" asp-route-status="@Model.Status">
+                    ← Prev
+                </a>
+            }
+            <span class="sm mut">Page @Model.Page of @Model.Pages</span>
+            @if (Model.Page < Model.Pages)
+            {
+                <a class="btn sec sm" asp-action="Index" asp-route-page="@(Model.Page + 1)" asp-route-search="@Model.Search" asp-route-status="@Model.Status" asp-route-type="@Model.Type">
+                    Next →
+
+                </a>
+            }
+        </div>
+    }
+</div>

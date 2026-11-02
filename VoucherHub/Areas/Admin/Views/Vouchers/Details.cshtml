@@ -1,0 +1,38 @@
+﻿@model Voucher
+@{
+    ViewData["Title"] = "Voucher details"; int? pid = ViewBag.PurchaseId;
+}
+<a class="btn sec sm" asp-action="Index">← Vouchers</a>
+<h2 style="margin-top:.75rem">
+    @Model.SerialNumber
+    <span class="b @Fmt.Badge(Model.Status)">@Model.Status</span>
+</h2>
+<div class="card" style="max-width:520px">
+    <dl>
+        <dt>Type</dt>
+        <dd>@Fmt.Exam(Model.ExamType)</dd>
+        <dt>Serial number</dt>
+        <dd>@Model.SerialNumber</dd>
+        <dt>PIN</dt>
+        <dd>@Model.Pin</dd>
+        <dt>Price</dt>
+        <dd>@Fmt.Money(Model.price)</dd>
+        @if (Model.SoldAt != null)
+        {
+            <dt>Sold at</dt>
+            <dd>@Fmt.Date(Model.SoldAt.Value)</dd>
+        }
+        @if (pid != null)
+        {
+            <dt>Purchase</dt>
+            <dd>
+                <a asp-controller="Purchases" asp-action="Details" asp-route-id="@pid">#@pid</a>
+            </dd>
+        }
+        }
+    </dl>
+    @if (Model.Status == VoucherStatus.Available)
+    {
+        <a class="btn sec sm" asp-action="Edit" asp-route-id="@Model.VoucherId">Edit</a>
+    }
+</div>

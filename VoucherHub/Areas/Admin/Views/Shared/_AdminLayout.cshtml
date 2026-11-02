@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"] – Admin</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true">
+</head>
+<body>
+    @{
+        var c = ViewContext.RouteData.Values["controller"]?.ToString(); string On(string n) => c == n ? "nav on" : "nav";
+    }
+    <div class="adm">
+        <aside class="side">
+            <span class="logo">Voucher<b>Hub</b> Admin</span>
+            <a class="@On("Dashboard")" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+            <a class="@On("Vouchers")" asp-area="Admin" asp-controller="Vouchers" asp-action="Index">Vouchers</a>
+          @*<a class="nav" asp-area="Admin" asp-controller="Vouchers" asp-action="Import">Import</a> *@
+            <a class="@On("Purchases")" asp-area="Admin" asp-controller="Purchases" asp-action="Index">Purchases</a>
+            <form method="post" asp-area="" asp-controller="Account" asp-action="Logout"><button type="submit">Sign out</button></form>
+        </aside>
+        <div class="main">
+            @if (TempData["Ok"] is string ok)
+            {
+                <div class="alert ok" role="status">@ok</div>
+            }
+            @if (TempData["Err"] is string er)
+            {
+                <div class="alert" role="alert">@er</div>
+            }
+            @RenderBody()
+        </div>
+    </div>
+</body>
+</html>
